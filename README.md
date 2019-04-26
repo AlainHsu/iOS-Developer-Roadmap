@@ -3,44 +3,33 @@ Be professional 🚀
 
 ## iOS Development Technology
 ![ESSENTIAL ROADMAP](ESSENTIALROADMAP.png)
-###UI
+### UI
 - //TODO
-
-###Objective-C language
+### Objective-C language
 - //TODO
-
-###Runtime
+### Runtime
 - //TODO
-
-###Memory management
+### Memory management
 - //TODO
-
-###Block
+### Block
 - //TODO
-
-###MultiThreading
+### MultiThreading
 - //TODO
-
-###RunLoop
+### RunLoop
 - //TODO
-
-###Network
+### Network
 - //TODO
-
-###Design patterns
+### Design patterns
 - //TODO
-
-###Architecture patterns
+### Architecture patterns
 - //TODO
-
-###Algorithm
+### Algorithm
 - //TODO
-
-###Third-party libraries
+### Third-party libraries
 - //TODO
 
 ## Development Process
-###Full App Development Process
+### Full App Development Process
 - Project Kickoff
     - Responsibility Matrix
         + Sign-off with all involved parties
@@ -64,9 +53,9 @@ Be professional 🚀
      - QA Cycle
 - Beta
     - Feature freeze
-    - IOP Plan
+    - IOP(interoperability) Plan
 - Goldmaster
-    - IOP report
+    - IOP(interoperability) report
     - Known issues list
     - Code freeze
     - Apple App Store approval materials
@@ -74,7 +63,7 @@ Be professional 🚀
     - Distribution Certificate
     - Stakeholders sign off
 
-###SDK Release Process
+### SDK Release Process
 - SDK Alpha Release (Initial release for Developer Preview. Multiple cycle)
     1. SDK libraries 
 
@@ -89,7 +78,7 @@ Be professional 🚀
     3. Programming Guide (With specification)
     4. Technical Design Document
 
-###Development
+### Development
 - [Code Standard](https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CodingGuidelines/CodingGuidelines.html)
 - [Versioning](https://semver.org)
 - Source Control Management (Version Control)
@@ -104,9 +93,9 @@ Be professional 🚀
     + Jenkins
 
 ## Development Tools
-###[Markdown](https://github.com/younghz/Markdown)
+- [Markdown](https://github.com/younghz/Markdown)
  A plain text formatting syntax designed so that it can optionally be converted to HTML.
-###[Sublime Text](https://github.com/jikeytang/sublime-text)
+- [Sublime Text](https://github.com/jikeytang/sublime-text)
 A sophisticated text editor for code, markup and prose
-###[VPS+Shadowsocks](https://teddysun.com/486.html)
+- [VPS+Shadowsocks](https://teddysun.com/486.html)
 "Across the Great Wall we can reach every corner of the world."
