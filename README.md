@@ -141,3 +141,5 @@ An online web tool to generate sequence diagram.
 A tool to debug and test the RESTful API.
 - [APNS-Tool](https://itunes.apple.com/cn/app/apns-tool/id963558865?l=en&mt=12)
 A simple application to test Apple Push Notification Service (APNS).
+- [Charles](https://www.charlesproxy.com)
+Charles is an HTTP proxy / HTTP monitor / Reverse Proxy that enables a developer to view all of the HTTP and SSL / HTTPS traffic between their machine and the Internet. This includes requests, responses and the HTTP headers (which contain the cookies and caching information).
