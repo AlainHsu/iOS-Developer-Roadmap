@@ -129,17 +129,23 @@
     + Jenkins
 
 ## Development Tools
+### Environment
 - [VPS+Shadowsocks](https://teddysun.com/486.html)
 "Across the Great Wall we can reach every corner of the world."
-- [Markdown](https://github.com/younghz/Markdown)
- A plain text formatting syntax designed so that it can optionally be converted to HTML.
-- [Sublime Text](https://github.com/jikeytang/sublime-text)
-A sophisticated text editor for code, markup and prose.
-- [Web sequence diagram](https://www.websequencediagrams.com)
-An online web tool to generate sequence diagram.
+
+### Development
 - [Postman](https://www.getpostman.com)
 A tool to debug and test the RESTful API.
 - [APNS-Tool](https://itunes.apple.com/cn/app/apns-tool/id963558865?l=en&mt=12)
 A simple application to test Apple Push Notification Service (APNS).
 - [Charles](https://www.charlesproxy.com)
 Charles is an HTTP proxy / HTTP monitor / Reverse Proxy that enables a developer to view all of the HTTP and SSL / HTTPS traffic between their machine and the Internet. This includes requests, responses and the HTTP headers (which contain the cookies and caching information).
+
+### Documentation
+- [Markdown](https://github.com/younghz/Markdown)
+ A plain text formatting syntax designed so that it can optionally be converted to HTML.
+- [Sublime Text](https://github.com/jikeytang/sublime-text)
+A sophisticated text editor for code, markup and prose.
+- [Web sequence diagram](https://www.websequencediagrams.com)
+An online web tool to generate sequence diagram.
+
