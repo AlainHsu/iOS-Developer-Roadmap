@@ -26,9 +26,50 @@
 
 
 ## iOS Development Technology
-![ESSENTIAL ROADMAP](ESSENTIALROADMAP.png)
+![ESSENTIAL ROADMAP](\Assets/ESSENTIALROADMAP.png)
 ### UI
-- //TODO
+- UITableView
+	- 重用机制
+		![TableView_Reuse](\Assets/TableView_Reuse.png)
+		- [索引条实现](\UI/TableVIew_Reuse)
+	- 数据源同步
+		- 并发访问,数据拷贝
+		![Concurrent_CopyData](\Assets/Concurrent_CopyData.png)
+			- PS:进行数据拷贝会占用内存空间,数据量大的时候存在内存开销问题
+		- 串行访问
+		![Serial_dataSync](\Assets/Serial_dataSync.png)
+			- PS:需要等待子线程处理任务,耗时任务时会导致延时
+- 事件传递&视图响应链
+	- UIView&CALayer
+		- UIView为其提供内容,以及负责处理触摸等事件,参与响应链; CALayer 负责显示内容 contents
+		- 体现了系统在设计上运用了单一职责原则
+	- 事件传递
+	
+		```objectivec
+		-(UIView*)hitTest:(CGPoint)point withEvent:(UIEvent*)event;
+		-(BOOL)pointInside(CGPoint)point withEvent:(UIEvent*)event;
+		```
+		- 系统实现
+		![HitTest_Flow](\Assets/HitTest_Flow.png)
+			- PS:倒序遍历子视图
+	- 视图响应链
+		
+		```objectivec
+		-(Void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event;
+		-(Void)touchesMoved:(NSSet*)touches withEvent:(UIEvent*)event;
+		-(Void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event;
+		```
+		- 系统实现
+		![Responder_Chain](\Assets/Responder_Chain.png)
+		
+	- 例子
+	![View_Event](\Assets/View_Event.png)
+		- 事件传递顺序: UIApplication -> UIWindow -> View A -> View B2 -> View C2
+		- 响应链传递顺序: View C2 -> View B2 -> View A -> ... -> UIApplication -> Ignore
+- 图像显示原理
+	- 
+- 卡顿&掉帧
+- 绘制原理&异步绘制
 
 ### Objective-C language
 - //TODO
