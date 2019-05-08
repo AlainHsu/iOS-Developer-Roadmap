@@ -1,6 +1,3 @@
-# iOS Developer Roadmap
-
-## Table of contents
 <!-- MarkdownTOC -->
 
 - [iOS Development Technology](#ios-development-technology)
@@ -30,10 +27,11 @@
 <!-- /MarkdownTOC -->
 
 
-## iOS Development Technology
+# iOS Development Technology
 ![ESSENTIAL ROADMAP](/Assets/ESSENTIALROADMAP.png)
-### UI
-#### UITableView
+## UI
+ 
+### UITableView
 - 重用机制
 	![TableView_Reuse](/Assets/TableView_Reuse.png)
 	- [索引条实现](/UI/TableVIew_Reuse)
@@ -43,8 +41,8 @@
 		- PS:进行数据拷贝会占用内存空间,数据量大的时候存在内存开销问题	- 串行访问
 	![Serial_dataSync](/Assets/Serial_dataSync.png)
 		- PS:需要等待子线程处理任务,耗时任务时会导致延时
-
-#### 事件传递与视图响应链
+ 
+### 事件传递与视图响应链
 - UIView&CALayer
 	- UIView为其提供内容,以及负责处理触摸等事件,参与响应链; CALayer 负责显示内容 contents
 	- 体现了系统在设计上运用了单一职责原则
@@ -73,7 +71,7 @@
 	- 事件传递顺序: UIApplication -> UIWindow -> View A -> View B2 -> View C2
 	- 响应链传递顺序: View C2 -> View B2 -> View A -> ... -> UIApplication -> Ignore
 
-#### 图像显示原理
+### 图像显示原理
 ![Display_concept](/Assets/Display_concept.png)
 - CPU 和 GPU 两个硬件是通过总线连接起来. CPU 输出位图, 经由总线在合适的时间上传给 GPU, GPU 会做相应的图层渲染,纹理合成, 之后把结果放到帧缓冲区当中,由视频控制器根据 V-Sync(垂直同步) 信号在指定时间之前去提取对应帧缓冲区当中的屏幕显示内容,然后最终显示到屏幕上面
 ![Display_overall](/Assets/Display_overall.png)
@@ -90,7 +88,7 @@
 - GPU 渲染管线
 	- 经过 顶点着色 -> 图元装配 -> 光栅化 -> 片段着色 -> 片段处理 将最终的像素点提交到对应的帧缓冲区当中
 
-#### 卡顿与掉帧
+### 卡顿与掉帧
 - UI 卡顿,掉帧的原因: 没有在 16.7ms 内准备好下一帧的画面
 	![Delay_reason](/Assets/Delay_reason.png)
 - 滑动优化方案
@@ -111,7 +109,7 @@
 					- 光栅化
 		- 视图混合(减小图层复杂性)
 
-#### 绘制原理与异步绘制
+### 绘制原理与异步绘制
 - 绘制原理
 	![Draw_overall_flow](/Assets/Draw_overall_flow.png)
 	- 不会立即调用 setNeedsDisplay, 会等到下一个 Runloop
@@ -127,41 +125,41 @@
 	- 设置该 bitmap 作为 layer.contents 属性的值
 	![Draw_async_draw](/Assets/Draw_async_draw.png)
 
-### Objective-C language
-#### //TODO
+## Objective-C language
+### //TODO
 
-### Runtime
-#### //TODO
+## Runtime
+### //TODO
 
-### Memory management
-#### //TODO
+## Memory management
+### //TODO
 
-### Block
-#### //TODO
+## Block
+### //TODO
 
-### MultiThreading
-#### //TODO
+## MultiThreading
+### //TODO
 
-### RunLoop
-#### //TODO
+## RunLoop
+### //TODO
 
-### Network
-#### //TODO
+## Network
+### //TODO
 
-### Design patterns
-#### //TODO
+## Design patterns
+### //TODO
 
-### Architecture patterns
-#### //TODO
+## Architecture patterns
+### //TODO
 
-### Algorithm
-#### //TODO
+## Algorithm
+### //TODO
 
-### Third-party libraries
-#### //TODO
+## Third-party libraries
+### //TODO
 
-## Development Process
-### Full App Development Process
+# Development Process
+## Full App Development Process
 - Project Kickoff
     - Responsibility Matrix
         + Sign-off with all involved parties
@@ -195,7 +193,7 @@
     - Distribution Certificate
     - Stakeholders sign off
 
-### SDK Release Process
+## SDK Release Process
 - SDK Alpha Release (Initial release for Developer Preview. Multiple cycle)
     1. SDK libraries 
 
@@ -210,7 +208,7 @@
     3. Programming Guide (With specification)
     4. Technical Design Document
 
-### Development
+## Development
 - [Code Standard](https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CodingGuidelines/CodingGuidelines.html)
 - [Versioning](https://semver.org)
 - Source Control Management (Version Control)
@@ -225,12 +223,12 @@
 - Continuous Integration / Continuous Deployment
     + Jenkins
 
-## Development Tools
-### Environment
+# Development Tools
+## Environment
 - [VPS+Shadowsocks](https://teddysun.com/486.html)
 "Across the Great Wall we can reach every corner of the world."
 
-### Development
+## Development
 - [Postman](https://www.getpostman.com)
 A tool to debug and test the RESTful API.
 - [APNS-Tool](https://itunes.apple.com/cn/app/apns-tool/id963558865?l=en&mt=12)
@@ -238,7 +236,7 @@ A simple application to test Apple Push Notification Service (APNS).
 - [Charles](https://www.charlesproxy.com)
 Charles is an HTTP proxy / HTTP monitor / Reverse Proxy that enables a developer to view all of the HTTP and SSL / HTTPS traffic between their machine and the Internet. This includes requests, responses and the HTTP headers (which contain the cookies and caching information).
 
-### Documentation
+## Documentation
 - [Markdown](https://github.com/younghz/Markdown)
  A plain text formatting syntax designed so that it can optionally be converted to HTML.
 - [Sublime Text](https://github.com/jikeytang/sublime-text)
