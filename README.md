@@ -1,8 +1,33 @@
-[TOC]
-
 # iOS Developer Roadmap
 
 ## Table of contents
+<!-- MarkdownTOC -->
+
+- [iOS Development Technology](#ios-development-technology)
+    - [UI](#ui)
+   	    - [UITableView](#uitableview)
+	    - [事件传递与视图响应链](#事件传递与视图响应链)
+	    - [图像显示原理](#图像显示原理)
+	    - [卡顿与掉帧](#卡顿与掉帧)
+	    - [绘制原理与异步绘制](#绘制原理与异步绘制)
+    - [Objective-C language](#objective-c-language)
+    - [Runtime](#runtime)
+    - [Memory management](#memory-management)
+    - [Block](#block)
+    - [MultiThreading](#multithreading)
+    - [RunLoop](#runloop)
+    - [Network](#network)
+    - [Design patterns](#design-patterns)
+    - [Architecture patterns](#architecture-patterns)
+    - [Algorithm](#algorithm)
+    - [Third-party libraries](#third-party-libraries)
+- [Development Process](#development-process)
+    - [Full App Development Process](#full-app-development-process)
+    - [SDK Release Process](#sdk-release-process)
+    - [Development](#development)
+- [Development Tools](#development-tools)
+
+<!-- /MarkdownTOC -->
 
 
 ## iOS Development Technology
@@ -19,7 +44,7 @@
 	![Serial_dataSync](/Assets/Serial_dataSync.png)
 		- PS:需要等待子线程处理任务,耗时任务时会导致延时
 
-#### 事件传递&视图响应链
+#### 事件传递与视图响应链
 - UIView&CALayer
 	- UIView为其提供内容,以及负责处理触摸等事件,参与响应链; CALayer 负责显示内容 contents
 	- 体现了系统在设计上运用了单一职责原则
@@ -65,7 +90,7 @@
 - GPU 渲染管线
 	- 经过 顶点着色 -> 图元装配 -> 光栅化 -> 片段着色 -> 片段处理 将最终的像素点提交到对应的帧缓冲区当中
 
-#### 卡顿&掉帧
+#### 卡顿与掉帧
 - UI 卡顿,掉帧的原因: 没有在 16.7ms 内准备好下一帧的画面
 	![Delay_reason](/Assets/Delay_reason.png)
 - 滑动优化方案
@@ -86,7 +111,7 @@
 					- 光栅化
 		- 视图混合(减小图层复杂性)
 
-#### 绘制原理&异步绘制
+#### 绘制原理与异步绘制
 - 绘制原理
 	![Draw_overall_flow](/Assets/Draw_overall_flow.png)
 	- 不会立即调用 setNeedsDisplay, 会等到下一个 Runloop
