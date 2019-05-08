@@ -29,8 +29,10 @@
 
 # iOS Development Technology
 ![ESSENTIAL ROADMAP](/Assets/ESSENTIALROADMAP.png)
+***
+
 ## UI
- 
+
 ### UITableView
 - 重用机制
 	![TableView_Reuse](/Assets/TableView_Reuse.png)
@@ -124,8 +126,10 @@
 	- 代理负责生成对应的 bitmap
 	- 设置该 bitmap 作为 layer.contents 属性的值
 	![Draw_async_draw](/Assets/Draw_async_draw.png)
+***
 
 ## Objective-C language
+
 ### //TODO
 
 ## Runtime
