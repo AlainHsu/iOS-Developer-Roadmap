@@ -2,12 +2,21 @@
 
 - [iOS Development Technology](#ios-development-technology)
     - [UI](#ui)
-   	    - [UITableView](#uitableview)
-	    - [事件传递与视图响应链](#事件传递与视图响应链)
-	    - [图像显示原理](#图像显示原理)
-	    - [卡顿与掉帧](#卡顿与掉帧)
-	    - [绘制原理与异步绘制](#绘制原理与异步绘制)
+  	- [UITableView](#uitableview)
+	- [事件传递与视图响应链](#事件传递与视图响应链)
+	- [图像显示原理](#图像显示原理)
+	- [卡顿与掉帧](#卡顿与掉帧)
+	- [绘制原理与异步绘制](#绘制原理与异步绘制)
     - [Objective-C language](#objective-c-language)
+    	- [Category](#category)
+	- [AssociatedObject关联对象](#associatedObject关联对象)
+	- [Extension](#extension)
+	- [Delegate](#delegate)
+	- [Notification](#notification)
+	- [KVO](#kvo)
+	- [KVC](#kvc)
+	- [Property关键字](#property)
+
     - [Runtime](#runtime)
     - [Memory management](#memory-management)
     - [Block](#block)
@@ -535,13 +544,11 @@ category 的属性不能生成成员变量和 getter、setter 方法的实现，
 
 	|  关联策略   |  等价属性  |	说明 |
 	| :------:  | :------: | :------: |
-	|  OBJC_ASSOCIATION_ASSIGN	| 	@property (assign) or @property (unsafe_unretained) | 弱引用关联对象 |
-	|  OBJC_ASSOCIATION_RETAIN_NONATOMIC |  @property (strong, nonatomic)	 |	强引用关联对象，且为非原子操作|
-	|  OBJC_ASSOCIATION_COPY_NONATOMIC	 |  @property (copy, nonatomic)	 |	复制关联对象，且为非原子操作
- |
-	|  OBJC_ASSOCIATION_RETAIN	 | @property (strong, atomic)	  |	强引用关联对象，且为原子操作
- |
-	|  OBJC_ASSOCIATION_COPY | @property (copy, atomic)	  |	复制关联对象，且为原子操作 |
+	|  OBJC_ASSOCIATION_ASSIGN| @property (assign) or @property (unsafe_unretained) | 弱引用关联对象 |
+	|  OBJC_ASSOCIATION_RETAIN_NONATOMIC | @property (strong, nonatomic)| 强引用关联对象，且为非原子操作 |
+	|  OBJC_ASSOCIATION_COPY_NONATOMIC| @property (copy, nonatomic)	| 复制关联对象，且为非原子操作 |
+	|  OBJC_ASSOCIATION_RETAIN	 | @property (strong, atomic)	  |	强引用关联对象，且为原子操作 |
+	|  OBJC_ASSOCIATION_COPY | @property (copy, atomic) | 复制关联对象，且为原子操作 |
 	- **_object_remove_assocations** 源码
 	
 	```objectivec
@@ -579,7 +586,7 @@ category 的属性不能生成成员变量和 getter、setter 方法的实现，
 	- 只以声明的形式存在,多数情况下寄生于宿主类的 .m 中
 	- 不能为系统类添加扩展
 
-### 代理
+### Delegate
 - 特点
 	- **代理模式**是一种软件设计模式, 在 iOS 当中以**@protocol**的形式体现
 	- 传递方式是**一对一**的
@@ -588,7 +595,7 @@ category 的属性不能生成成员变量和 getter、setter 方法的实现，
 - 一般声明为 weak 以规避循环引用
 	![Delegate_declare](/Assets/Delegate_declare.png)
 
-### 通知
+### Notification
 - 特点
 	- 是使用**观察者模式**来实现的用于**跨层传递消息**的机制
 	- 传递方式是**一对多**
@@ -634,7 +641,7 @@ category 的属性不能生成成员变量和 getter、setter 方法的实现，
 
 ***
 
-### 属性关键字
+### Property关键字
 - 分类
 	- 读写权限
 		- readonly
