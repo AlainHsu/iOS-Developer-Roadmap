@@ -173,158 +173,156 @@ CPU 和 GPU 两个硬件是通过总线连接起来. CPU 输出位图, 经由总
 	- remethodizeClass 源码
 	
 	```objectivec
-static void remethodizeClass(Class cls)
-{
-    category_list *cats;
-    bool isMeta;
-
-    runtimeLock.assertWriting();
-
-    /*
-     判断是否类方法,这里假设 isMeta == NO
-    */
-    isMeta = cls->isMetaClass();
-
-    // Re-methodizing: check for more categories
-    //获取 cls 中未完成整合的所有分类
-    if ((cats = unattachedCategoriesForClass(cls, false/*not realizing*/))) {
-        if (PrintConnecting) {
-            _objc_inform("CLASS: attaching categories to class '%s' %s", 
-                         cls->nameForLogging(), isMeta ? "(meta)" : "");
-        }
-        
-        //将分类 cats 拼接到 cls 宿主类上
-        attachCategories(cls, cats, true /*flush caches*/);        
-        free(cats);
-    }
-}
+	static void remethodizeClass(Class cls)
+	{
+	    category_list *cats;
+	    bool isMeta;
+	
+	    runtimeLock.assertWriting();
+	
+	    /*
+	     判断是否类方法,这里假设 isMeta == NO
+	    */
+	    isMeta = cls->isMetaClass();
+	
+	    // Re-methodizing: check for more categories
+	    //获取 cls 中未完成整合的所有分类
+	    if ((cats = unattachedCategoriesForClass(cls, false/*not realizing*/))) {
+	        if (PrintConnecting) {
+	            _objc_inform("CLASS: attaching categories to class '%s' %s", cls->nameForLogging(), isMeta ? "(meta)" : "");
+    	    	}
+		
+		//将分类 cats 拼接到 cls 宿主类上
+	        attachCategories(cls, cats, true /*flush caches*/);        
+        	free(cats);
+ 	   }
+	}
 	``` 
 	- attachCategories 源码
 
 	```objectivec
-static void 
-attachCategories(Class cls, category_list *cats, bool flush_caches)
-{
-    if (!cats) return;
-    if (PrintReplacedMethods) printReplacements(cls, cats);
-
-    // 这里假设 isMeta == NO
-    bool isMeta = cls->isMetaClass();
-
-    // fixme rearrange to remove these intermediate allocations
-    /*  二维数组
-        [[method_t,method_t,...], [method_t], [method_t,method_t,method_t],...]
-     */
-    method_list_t **mlists = (method_list_t **)
-        malloc(cats->count * sizeof(*mlists));
-    property_list_t **proplists = (property_list_t **)
-        malloc(cats->count * sizeof(*proplists));
-    protocol_list_t **protolists = (protocol_list_t **)
-        malloc(cats->count * sizeof(*protolists));
-
-    // Count backwards through cats to get newest categories first
-    int mcount = 0; //  方法参数
-    int propcount = 0;  //  属性参数
-    int protocount = 0; //  协议参数
-    int i = cats->count;    //  宿主类的分类总数
-    bool fromBundle = NO;
-    while (i--) {   //这里是倒叙遍历,最先访问最后编译 cats 中的分类
-        //  获取一个分类
-        auto& entry = cats->list[i];
-
-        //  获取该分类的方法列表
-        method_list_t *mlist = entry.cat->methodsForMeta(isMeta);
-        if (mlist) {
-            //  将方法依次添加到二维数组列表中, 最后编译的分类最先添加
-            mlists[mcount++] = mlist;
-            fromBundle |= entry.hi->isBundle();
-        }
-
-        //  属性列表添加规则 同方法列表添加规则
-        property_list_t *proplist = entry.cat->propertiesForMeta(isMeta);
-        if (proplist) {
-            proplists[propcount++] = proplist;
-        }
-
-        //  协议列表添加规则 同方法列表添加规则
-        protocol_list_t *protolist = entry.cat->protocols;
-        if (protolist) {
-            protolists[protocount++] = protolist;
-        }
-    }
-    
-    //  获取宿主类当中的 rw 数据, 其中包含宿主类的方法列表信息
-    auto rw = cls->data();
-
-    //  主要是针对分类中有关内存管理相关方法情况下的一些特殊处理
-    prepareMethodLists(cls, mlists, mcount, NO, fromBundle);
-    /*
-     rw 代表类
-     methods 代表类的方法列表
-     attachLists 方法的含义是 将含有 mcount 个元素的 mlists 拼接到 rw 的 methods 上
-     */
-    rw->methods.attachLists(mlists, mcount);
-    free(mlists);
-    if (flush_caches  &&  mcount > 0) flushCaches(cls);
-
-    rw->properties.attachLists(proplists, propcount);
-    free(proplists);
-
-    rw->protocols.attachLists(protolists, protocount);
-    free(protolists);
-}
+	static void 
+	attachCategories(Class cls, category_list *cats, bool flush_caches)
+	{
+	    if (!cats) return;
+	    if (PrintReplacedMethods) printReplacements(cls, cats);
+	
+	    // 这里假设 isMeta == NO
+	    bool isMeta = cls->isMetaClass();
+	
+	    // fixme rearrange to remove these intermediate allocations
+	    /*  二维数组
+   	     [[method_t,method_t,...], [method_t], [method_t,method_t,method_t],...]
+  	   */
+  	  method_list_t **mlists = (method_list_t **)
+  	      malloc(cats->count * sizeof(*mlists));
+  	  property_list_t **proplists = (property_list_t **)
+  	      malloc(cats->count * sizeof(*proplists));
+  	  protocol_list_t **protolists = (protocol_list_t **)
+  	      malloc(cats->count * sizeof(*protolists));
+	
+ 	   // Count backwards through cats to get newest categories first
+  	  int mcount = 0; //  方法参数
+  	  int propcount = 0;  //  属性参数
+  	  int protocount = 0; //  协议参数
+  	  int i = cats->count;    //  宿主类的分类总数
+  	  bool fromBundle = NO;
+  	  while (i--) {   //这里是倒叙遍历,最先访问最后编译 cats 中的分类
+  	      //  获取一个分类
+  	      auto& entry = cats->list[i];
+	
+ 	       //  获取该分类的方法列表
+ 	       method_list_t *mlist = entry.cat->methodsForMeta(isMeta);
+  	      if (mlist) {
+  	          //  将方法依次添加到二维数组列表中, 最后编译的分类最先添加
+        	    mlists[mcount++] = mlist;
+  	          fromBundle |= entry.hi->isBundle();
+	        }
+	
+	        //  属性列表添加规则 同方法列表添加规则
+        	property_list_t *proplist = entry.cat->propertiesForMeta(isMeta);
+        	if (proplist) {
+	            proplists[propcount++] = proplist;
+	        }
+	
+	        //  协议列表添加规则 同方法列表添加规则
+	        protocol_list_t *protolist = entry.cat->protocols;
+	        if (protolist) {
+	            protolists[protocount++] = protolist;
+	        }
+	    }
+    	
+	    //  获取宿主类当中的 rw 数据, 其中包含宿主类的方法列表信息
+	    auto rw = cls->data();
+	
+	    //  主要是针对分类中有关内存管理相关方法情况下的一些特殊处理
+	    prepareMethodLists(cls, mlists, mcount, NO, fromBundle);
+	    /*
+	     rw 代表类
+	     methods 代表类的方法列表
+	     attachLists 方法的含义是 将含有 mcount 个元素的 mlists 拼接到 rw 的 methods 上
+	     */
+	    rw->methods.attachLists(mlists, mcount);
+	    free(mlists);
+	    if (flush_caches  &&  mcount > 0) flushCaches(cls);
+	
+	    rw->properties.attachLists(proplists, propcount);
+	    free(proplists);
+	
+	    rw->protocols.attachLists(protolists, protocount);
+	    free(protolists);
+	}
 	```
 	- attachLists 源码
 	
 	```objectivec
-    /*
-        addedLists 传递过来的二维数组
-     [[method_t,method_t,...], [method_t], [method_t,method_t,method_t],...]
-     -----------------------   ---------   ---------------------------------
-        分类 A 中的方法列表(A)        B                     C
-     
-        addedCount = 3
-     */
-    void attachLists(List* const * addedLists, uint32_t addedCount) {
-        if (addedCount == 0) return;
-
-        if (hasArray()) {
-            // many lists -> many lists
-            // 列表中原有元素总数 oldCount = 2
-            uint32_t oldCount = array()->count;
-            // 拼接之后的元素总数
-            uint32_t newCount = oldCount + addedCount;
-            // 根据新总数重新分配内存
-            setArray((array_t *)realloc(array(), array_t::byteSize(newCount)));
-            // 重新设置元素总数
-            array()->count = newCount;
-            /*
-                内存移动
-                [[], [], [], [原有的第一个元素], [原有的第二个元素]]
-             */
-            memmove(array()->lists + addedCount, array()->lists, 
-                    oldCount * sizeof(array()->lists[0]));
-            /*
-                内存拷贝
-                [
-                    A   --->    [addedLists 中的第一个元素],
-                    B   --->    [addedLists 中的第二个元素],
-                    C   --->    [addedLists 中的第三个元素],
-                    [原有的第一个元素],
-                    [原有的第二个元素]
-                ]
-             
-                这也是分类方法会"覆盖"宿主类方法的原因
-             */
-            memcpy(array()->lists, addedLists, 
-                   addedCount * sizeof(array()->lists[0]));
-        }
+    	/*
+    	    addedLists 传递过来的二维数组
+    	 [[method_t,method_t,...], [method_t], [method_t,method_t,method_t],...]
+    	 -----------------------   ---------   ---------------------------------
+    	    分类 A 中的方法列表(A)        B                     C
+    	    addedCount = 3
+    	*/
+    	void attachLists(List* const * addedLists, uint32_t addedCount) {\
+    	    	if (addedCount == 0) return;
+		
+	        if (hasArray()) {
+	            // many lists -> many lists
+	            // 列表中原有元素总数 oldCount = 2
+	            uint32_t oldCount = array()->count;
+	            // 拼接之后的元素总数
+	            uint32_t newCount = oldCount + addedCount;
+	            // 根据新总数重新分配内存
+	            setArray((array_t *)realloc(array(), array_t::byteSize(newCount)));
+	            // 重新设置元素总数
+	            array()->count = newCount;
+	            /*
+	                内存移动
+	                [[], [], [], [原有的第一个元素], [原有的第二个元素]]
+	             */
+	            memmove(array()->lists + addedCount, array()->lists, 
+	                    oldCount * sizeof(array()->lists[0]));
+	            /*
+	                内存拷贝
+	                [
+	                    A   --->    [addedLists 中的第一个元素],
+	                    B   --->    [addedLists 中的第二个元素],
+	                    C   --->    [addedLists 中的第三个元素],
+	                    [原有的第一个元素],
+	                    [原有的第二个元素]
+	                ]
+	             
+	                这也是分类方法会"覆盖"宿主类方法的原因
+	             */
+	            memcpy(array()->lists, addedLists, 
+	                   addedCount * sizeof(array()->lists[0]));
+	        }
 	
 		...	//后面省略
-};
+	}
 	```	
 - 总结
-	- 	分类添加的方法可以"覆盖"原类方法
+	-  分类添加的方法可以"覆盖"原类方法
 	-  同名分类方法谁能生效取决于编译顺序
 	-  名字相同的分类会引起编译报错
 
@@ -334,49 +332,49 @@ category 的属性不能生成成员变量和 getter、setter 方法的实现，
 - 关联对象来实现提供三个接口 **objc_setAssociatedObject**,**objc_getAssociatedObject**,**objc_removeAssociatedObjects**,他们分别调用的是
 
 	```objectivec
-id objc_getAssociatedObject(id object, const void *key) {
-    return _object_get_associative_reference(object, (void *)key);
-}
-void objc_setAssociatedObject(id object, const void *key, id value, objc_AssociationPolicy policy) {
-    _object_set_associative_reference(object, (void *)key, value, policy);
-}
-void objc_removeAssociatedObjects(id object) 
-{
-    if (object && object->hasAssociatedObjects()) {
-        _object_remove_assocations(object);
-    }
-}
+	id objc_getAssociatedObject(id object, const void *key) {
+	    return _object_get_associative_reference(object, (void *)key);
+	}
+	void objc_setAssociatedObject(id object, const void *key, id value, objc_AssociationPolicy policy) {
+	    _object_set_associative_reference(object, (void *)key, value, policy);
+	}
+	void objc_removeAssociatedObjects(id object) 
+	{
+	    if (object && object->hasAssociatedObjects()) {
+	        _object_remove_assocations(object);
+	    }
+	}
 	```
 - 他们调用的接口都位于 objc-references.mm文件中,
 	- **_object_get_associative_reference** 源码 
 
 	```objectivec
-id _object_get_associative_reference(id object, void *key) {
-    id value = nil;
-    uintptr_t policy = OBJC_ASSOCIATION_ASSIGN;
-    {
-        AssociationsManager manager;
-        AssociationsHashMap &associations(manager.associations());
-        disguised_ptr_t disguised_object = DISGUISE(object);
-        AssociationsHashMap::iterator i = associations.find(disguised_object);
-        if (i != associations.end()) {
-            ObjectAssociationMap *refs = i->second;
-            ObjectAssociationMap::iterator j = refs->find(key);
-            if (j != refs->end()) {
-                ObjcAssociation &entry = j->second;
-                value = entry.value();
-                policy = entry.policy();
-                if (policy & OBJC_ASSOCIATION_GETTER_RETAIN) {
-                    objc_retain(value);
-                }
-            }
-        }
-    }
-    if (value && (policy & OBJC_ASSOCIATION_GETTER_AUTORELEASE)) {
-        objc_autorelease(value);
-    }
-    return value;
-}
+	id _object_get_associative_reference(id object, void *key) {
+	    id value = nil;
+	    uintptr_t policy = OBJC_ASSOCIATION_ASSIGN;
+	    {
+	        AssociationsManager manager;
+	        AssociationsHashMap &associations(manager.associations());
+	        disguised_ptr_t disguised_object = DISGUISE(object);
+	        AssociationsHashMap::iterator i = associations.find(disguised_object);
+	        if (i != associations.end()) {
+	            ObjectAssociationMap *refs = i->second;
+        	    ObjectAssociationMap::iterator j = refs->find(key);
+        	    if (j != refs->end()) {
+        	        ObjcAssociation &entry = j->second;
+        	        value = entry.value();
+        	        policy = entry.policy();
+        	        if (policy & OBJC_ASSOCIATION_GETTER_RETAIN) {
+                	    objc_retain(value);
+                	}
+	            }
+        	}
+	    }
+	    if (value && (policy & OBJC_ASSOCIATION_GETTER_AUTORELEASE)) {
+	        objc_autorelease(value);
+	    }
+	    return value;
+	}
 	```
 	- 这段代码引用的类型有:
 		- AssociationsManager
@@ -385,56 +383,56 @@ id _object_get_associative_reference(id object, void *key) {
 		- ObjcAssociation
 	
 	```objectivec
-spinlock_t AssociationsManagerLock;
-class AssociationsManager {
-    static AssociationsHashMap *_map;
-public:
-    // 初始化时候
-    AssociationsManager()   { AssociationsManagerLock.lock(); }
-    // 析构的时候
-    ~AssociationsManager()  { AssociationsManagerLock.unlock(); }
-    
-    // associations 方法用于取得一个全局的 AssociationsHashMap 单例
-    AssociationsHashMap &associations() {
-        if (_map == NULL)
-            _map = new AssociationsHashMap();
-        return *_map;
-    }
-};
+	spinlock_t AssociationsManagerLock;
+	class AssociationsManager {
+	    static AssociationsHashMap *_map;
+	public:
+	    // 初始化时候
+	    AssociationsManager()   { AssociationsManagerLock.lock(); }
+	    // 析构的时候
+	    ~AssociationsManager()  { AssociationsManagerLock.unlock(); }
+	    
+	    // associations 方法用于取得一个全局的 AssociationsHashMap 单例
+	    AssociationsHashMap &associations() {
+	        if (_map == NULL)
+	            _map = new AssociationsHashMap();
+	        return *_map;
+	    }
+	};
 	```
 	- **AssociationsManager** 初始化一个 AssociationsHashMap 的单例，用自旋锁 AssociationsManagerLock 保证线程安全
 	
 	```objectivec
-class AssociationsHashMap : public unordered_map<disguised_ptr_t, ObjectAssociationMap *, DisguisedPointerHash, DisguisedPointerEqual, AssociationsHashMapAllocator> {
-    public:
-        void *operator new(size_t n) { return ::malloc(n); }
-        void operator delete(void *ptr) { ::free(ptr); }
-    };
-	```
+	class AssociationsHashMap : public unordered_map<disguised_ptr_t, ObjectAssociationMap *, DisguisedPointerHash, 	DisguisedPointerEqual, AssociationsHashMapAllocator> {
+	    public:
+	        void *operator new(size_t n) { return ::malloc(n); }
+	        void operator delete(void *ptr) { ::free(ptr); }
+	    };
+		```
 	- **AssociationsHashMap** 是一个map类型，用于保存对象的对象的 disguised_ptr_t 到 ObjectAssociationMap 的映射
 		
 	```objectivec
-class ObjectAssociationMap : public std::map<void *, ObjcAssociation, ObjectPointerLess, ObjectAssociationMapAllocator> {
-    public:
-        void *operator new(size_t n) { return ::malloc(n); }
-        void operator delete(void *ptr) { ::free(ptr); }
-    };
+	class ObjectAssociationMap : public std::map<void *, ObjcAssociation, ObjectPointerLess, ObjectAssociationMapAllocator> {
+	    public:
+	        void *operator new(size_t n) { return ::malloc(n); }
+	        void operator delete(void *ptr) { ::free(ptr); }
+	};
 	```	
 	- **ObjectAssociationMap** 则保存了从 key 到关联对象 ObjcAssociation 的映射，这个数据结构保存了当前对象对应的所有关联对象
 	
 	```objectivec
-class ObjcAssociation {
-        uintptr_t _policy;
-        id _value;
-    public:
-        ObjcAssociation(uintptr_t policy, id value) : _policy(policy), _value(value) {}
-        ObjcAssociation() : _policy(0), _value(nil) {}
-
-        uintptr_t policy() const { return _policy; }
-        id value() const { return _value; }
-        
-        bool hasValue() { return _value != nil; }
-    };
+	class ObjcAssociation {
+	        uintptr_t _policy;
+	        id _value;
+	    public:
+	        ObjcAssociation(uintptr_t policy, id value) : _policy(policy), _value(value) {}
+	        ObjcAssociation() : _policy(0), _value(nil) {}
+	
+	        uintptr_t policy() const { return _policy; }
+	        id value() const { return _value; }
+	        
+	        bool hasValue() { return _value != nil; }
+	};
 	```
 	- **ObjcAssociation** 就是真正的关联对象的类，上面的所有数据结构只是为了更好的存储它。最关键的 ObjcAssociation 包含了 policy 以及 value
 	- 用一张图解释他们的关系就是：
@@ -448,87 +446,87 @@ class ObjcAssociation {
 	- **_object_set_associative_reference** 源码
 	
 	```objectivec
-void _object_set_associative_reference(id object, void *key, id value, uintptr_t policy) {
-    // retain the new value (if any) outside the lock.
-    uintptr_t old_policy = 0; // NOTE:  old_policy is always assigned to when old_value is non-nil.
-    id new_value = value ? acquireValue(value, policy) : nil, old_value = nil; // 调用 acquireValue 对 value 进行 retain 或者 copy
-    {
+	void _object_set_associative_reference(id object, void *key, id value, uintptr_t policy) {
+	    // retain the new value (if any) outside the lock.
+	    uintptr_t old_policy = 0; // NOTE:  old_policy is always assigned to when old_value is non-nil.
+	    id new_value = value ? acquireValue(value, policy) : nil, old_value = nil; // 调用 acquireValue 对 value 进行 retain 或者 copy
+	    {
+	
+	        // & 取地址 *是指针，就是地址的内容
+	        AssociationsManager manager;  // 初始化一个 AssociationsManager 类型的变量 manager
+	        AssociationsHashMap &associations(manager.associations());   // 取得一个全局的 AssociationsHashMap 单例
+       	 if (new_value) {
+	
+	            // 如果new_value不为空，开始遍历associations指向的map，查找object对象是否存在保存联合存储数据的ObjectAssociationMap对象
+	
+        	    // 查找map中是否包含某个关键字条目，用 find() 方法，传入的参数是要查找的key（被关联对象的内存地址），在这里需要提到的是begin()和end()两个成员，分别代表map对象中第一个条目和最后一个条目，这两个数据的类型是iterator.
+	            // 定义一个条目变量 i (实际是指针)
+        	    AssociationsHashMap::iterator i = associations.find(object);  // AssociationsHashMap 是一个无序的哈希表，维护了从对象地址到 ObjectAssociationMap 的映射；
+	
+	
+        	    // iterator是 C++ 中的迭代器 ， 这句话是定义一个 AssociationsHashMap::iterator 类型的变量 i，初始化为 associations.find(object) ， associations是AssociationsHashMap类型对象。
+	
+        	    // 通过map对象的方法获取的iterator数据类型 是一个std::pair对象
+	            // 根据对象地址获取起对应的 ObjectAssociationMap对象
+	            if (i != associations.end()) {
+	                // 存在
+	
+	                // object对象在associations指向的map中存在一个ObjectAssociationMap对象refs
+	
+	                // ObjectAssociationMap 是一个 C++ 中的 map ，维护了从 key（就是外界传入的key） 到 ObjcAssociation 的映射，即关联记录
+        	        ObjectAssociationMap *refs = i->second;              //  指针 调用方法 需要用 ->   i 是 AssociationsHashMap    i->second 表示ObjectAssociationMap  i->first 表示对象的地址
+                	ObjectAssociationMap::iterator j = refs->find(key);  //  根据传入的关联对象的key（一个地址）获取其对应的关联对象  ObjectAssociationMap
+	
+	
+        	        // 关联对象是否存在
+                	if (j != refs->end()) {
+                    	// 使用过该key保存value，用新的value和policy替换掉原来的值
+                    	// 如果存在 持有旧的关联对象
+                    	ObjcAssociation &old_entry = j->second;  
+                    	old_policy = old_entry.policy;
+                    	old_value = old_entry.value;
+	
+                    	// 存入新的关联对象
+                    	old_entry.policy = policy;
+                    	old_entry.value = new_value;
+	                } else {
+	                    // 没用使用过该key保存value，将value和policy保存到key映射的map中
+	                    // 如果不存在 直接存入新的关联对象
+	                    (*refs)[key] = ObjcAssociation(policy, new_value);   // 对map 插入元素
+	                }
+       		     }
+	            else {
+	
+        	        // 不存在
+                	// 没有object就创建
+	                // create the new association (first time).
+	                ObjectAssociationMap *refs = new ObjectAssociationMap;
+	                associations[object] = refs;
+	                (*refs)[key] = ObjcAssociation(policy, new_value);
+	                _class_setInstancesHaveAssociatedObjects(_object_getClass(object));
+	            }
+	        } else {
+	            // setting the association to nil breaks the association.
+	            AssociationsHashMap::iterator i = associations.find(object);
+	            if (i !=  associations.end()) {
+	                ObjectAssociationMap *refs = i->second;
+	                ObjectAssociationMap::iterator j = refs->find(key);
+	                if (j != refs->end()) {
+	                    ObjcAssociation &old_entry = j->second;
+	                    old_policy = old_entry.policy;
+	                    old_value = (id) old_entry.value;
+	
+	                    // 从 map中删除该项
+	                    refs->erase(j);
+	                }
+	            }
+	        }
+	    }
 
-        // & 取地址 *是指针，就是地址的内容
-        AssociationsManager manager;  // 初始化一个 AssociationsManager 类型的变量 manager
-        AssociationsHashMap &associations(manager.associations());   // 取得一个全局的 AssociationsHashMap 单例
-        if (new_value) {
-
-            // 如果new_value不为空，开始遍历associations指向的map，查找object对象是否存在保存联合存储数据的ObjectAssociationMap对象
-
-            // 查找map中是否包含某个关键字条目，用 find() 方法，传入的参数是要查找的key（被关联对象的内存地址），在这里需要提到的是begin()和end()两个成员，分别代表map对象中第一个条目和最后一个条目，这两个数据的类型是iterator.
-            // 定义一个条目变量 i (实际是指针)
-            AssociationsHashMap::iterator i = associations.find(object);  // AssociationsHashMap 是一个无序的哈希表，维护了从对象地址到 ObjectAssociationMap 的映射；
-
-
-            // iterator是 C++ 中的迭代器 ， 这句话是定义一个 AssociationsHashMap::iterator 类型的变量 i，初始化为 associations.find(object) ， associations是AssociationsHashMap类型对象。
-
-            // 通过map对象的方法获取的iterator数据类型 是一个std::pair对象
-            // 根据对象地址获取起对应的 ObjectAssociationMap对象
-            if (i != associations.end()) {
-                // 存在
-
-                // object对象在associations指向的map中存在一个ObjectAssociationMap对象refs
-
-                // ObjectAssociationMap 是一个 C++ 中的 map ，维护了从 key（就是外界传入的key） 到 ObjcAssociation 的映射，即关联记录
-                ObjectAssociationMap *refs = i->second;              //  指针 调用方法 需要用 ->   i 是 AssociationsHashMap    i->second 表示ObjectAssociationMap  i->first 表示对象的地址
-                ObjectAssociationMap::iterator j = refs->find(key);  //  根据传入的关联对象的key（一个地址）获取其对应的关联对象  ObjectAssociationMap
-
-
-                // 关联对象是否存在
-                if (j != refs->end()) {
-                    // 使用过该key保存value，用新的value和policy替换掉原来的值
-                    // 如果存在 持有旧的关联对象
-                    ObjcAssociation &old_entry = j->second;  
-                    old_policy = old_entry.policy;
-                    old_value = old_entry.value;
-
-                    // 存入新的关联对象
-                    old_entry.policy = policy;
-                    old_entry.value = new_value;
-                } else {
-                    // 没用使用过该key保存value，将value和policy保存到key映射的map中
-                    // 如果不存在 直接存入新的关联对象
-                    (*refs)[key] = ObjcAssociation(policy, new_value);   // 对map 插入元素
-                }
-            }
-            else {
-
-                // 不存在
-                // 没有object就创建
-                // create the new association (first time).
-                ObjectAssociationMap *refs = new ObjectAssociationMap;
-                associations[object] = refs;
-                (*refs)[key] = ObjcAssociation(policy, new_value);
-                _class_setInstancesHaveAssociatedObjects(_object_getClass(object));
-            }
-        } else {
-            // setting the association to nil breaks the association.
-            AssociationsHashMap::iterator i = associations.find(object);
-            if (i !=  associations.end()) {
-                ObjectAssociationMap *refs = i->second;
-                ObjectAssociationMap::iterator j = refs->find(key);
-                if (j != refs->end()) {
-                    ObjcAssociation &old_entry = j->second;
-                    old_policy = old_entry.policy;
-                    old_value = (id) old_entry.value;
-
-                    // 从 map中删除该项
-                    refs->erase(j);
-                }
-            }
-        }
-    }
-
-    // 旧的关联对象是否存在，如果存在，释放旧的关联对象。
-    // release the old value (outside of the lock).
-    if (old_value) releaseValue(old_value, old_policy);
-}
+	    // 旧的关联对象是否存在，如果存在，释放旧的关联对象。
+	    // release the old value (outside of the lock).
+	    if (old_value) releaseValue(old_value, old_policy);
+	}
 	```
 	- **_object_set_associative_reference**设置关联对象的流程参照图片：
 	![Associaticve_reference](/Assets/Associaticve_reference.png)
@@ -547,27 +545,27 @@ void _object_set_associative_reference(id object, void *key, id value, uintptr_t
 	- **_object_remove_assocations** 源码
 	
 	```objectivec
-void _object_remove_assocations(id object) {
-    vector< ObjcAssociation,ObjcAllocator<ObjcAssociation> > elements;
-    {
-        AssociationsManager manager;
-        AssociationsHashMap &associations(manager.associations());
-        if (associations.size() == 0) return;
-        disguised_ptr_t disguised_object = DISGUISE(object);
-        AssociationsHashMap::iterator i = associations.find(disguised_object);
-        if (i != associations.end()) {
-            // 获取到所有的关联对象的associations实例
-            ObjectAssociationMap *refs = i->second;
-            for (ObjectAssociationMap::iterator j = refs->begin(), end = refs->end(); j != end; ++j) {
-                elements.push_back(j->second);
-            }
-            delete refs;    //删除ObjectAssociationMap
-            associations.erase(i);//删除AssociationsHashMap
-        }
-    }
-    //删除elements集合中的所有ObjcAssociation元素
-    for_each(elements.begin(), elements.end(), ReleaseValue());
-}
+	void _object_remove_assocations(id object) {
+	    vector< ObjcAssociation,ObjcAllocator<ObjcAssociation> > elements;
+	    {
+        	AssociationsManager manager;
+	        AssociationsHashMap &associations(manager.associations());
+	        if (associations.size() == 0) return;
+        	disguised_ptr_t disguised_object = DISGUISE(object);
+	        AssociationsHashMap::iterator i = associations.find(disguised_object);
+        	if (i != associations.end()) {
+	            // 获取到所有的关联对象的associations实例
+	            ObjectAssociationMap *refs = i->second;
+	            for (ObjectAssociationMap::iterator j = refs->begin(), end = refs->end(); j != end; ++j) {
+	                elements.push_back(j->second);
+	            }
+	            delete refs;    //删除ObjectAssociationMap
+	            associations.erase(i);//删除AssociationsHashMap
+	        }
+	    }
+	    //删除elements集合中的所有ObjcAssociation元素
+	    for_each(elements.begin(), elements.end(), ReleaseValue());
+	}
 	```
 	- 删除关联对象的流程相对就比较简单了，将获取到的关联对象ObjcAssociation的实例放入一个 vector中，删除对应的 ObjectAssociationMap 和 AssociationsHashMap,最后对 vector 中每个 ObjcAssociation 实例做release操作
 
