@@ -392,13 +392,14 @@ category 的属性不能生成成员变量和 getter、setter 方法的实现，
 	
 	```objectivec
 	spinlock_t AssociationsManagerLock;
+	
 	class AssociationsManager {
 	    static AssociationsHashMap *_map;
 	public:
 	    // 初始化时候
 	    AssociationsManager()   { AssociationsManagerLock.lock(); }
 	    // 析构的时候
-	    ~AssociationsManager()  { AssociationsManagerLock.unlock(); }
+	    AssociationsManager()  { AssociationsManagerLock.unlock(); }
 	    
 	    // associations 方法用于取得一个全局的 AssociationsHashMap 单例
 	    AssociationsHashMap &associations() {
@@ -411,12 +412,12 @@ category 的属性不能生成成员变量和 getter、setter 方法的实现，
 	- **AssociationsManager** 初始化一个 AssociationsHashMap 的单例，用自旋锁 AssociationsManagerLock 保证线程安全
 	
 	```objectivec
-	class AssociationsHashMap : public unordered_map<disguised_ptr_t, ObjectAssociationMap *, DisguisedPointerHash, 	DisguisedPointerEqual, AssociationsHashMapAllocator> {
+	class AssociationsHashMap : public unordered_map<disguised_ptr_t, ObjectAssociationMap *, DisguisedPointerHash, DisguisedPointerEqual, AssociationsHashMapAllocator> {
 	    public:
 	        void *operator new(size_t n) { return ::malloc(n); }
 	        void operator delete(void *ptr) { ::free(ptr); }
 	    };
-		```
+	```
 	- **AssociationsHashMap** 是一个map类型，用于保存对象的对象的 disguised_ptr_t 到 ObjectAssociationMap 的映射
 		
 	```objectivec
