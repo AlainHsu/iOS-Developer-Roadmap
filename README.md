@@ -793,9 +793,19 @@ Charles is an HTTP proxy / HTTP monitor / Reverse Proxy that enables a developer
 
 ## Documentation
 - [Markdown](https://github.com/younghz/Markdown)
- A plain text formatting syntax designed so that it can optionally be converted to HTML.
+Markdown format.
 - [Sublime Text](https://github.com/jikeytang/sublime-text)
-A sophisticated text editor for code, markup and prose.
+Extendable Markdown editor.
 - [Web sequence diagram](https://www.websequencediagrams.com)
-An online web tool to generate sequence diagram.
+Generate sequence diagram online.
+- [Capture iOS Simulator to animated gif](https://gist.github.com/julesjans/2baa9e4bc11b033ea8eec3f15a8029a1)
 
+	```shell
+	# Turn on the simulator screen capture
+	xcrun simctl io booted recordVideo ~/simulator.mov
+	
+	# Convert the iPhone 6s screen shot into a gif:
+	ffmpeg -i ~/simulator.mov -vf scale=320:-1 -r 6 -f gif -y simulator.gif
+	```
+- [You-Get](https://github.com/soimort/you-get)
+Download web vedio in command line.
