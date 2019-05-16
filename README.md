@@ -178,7 +178,7 @@ CPU 和 GPU 两个硬件是通过总线连接起来. CPU 输出位图, 经由总
 
 	```
 - 源码分析
-	- remethodizeClass 源码
+	- **remethodizeClass** 源码
 	
 	```objectivec
 	static void remethodizeClass(Class cls)
@@ -206,7 +206,7 @@ CPU 和 GPU 两个硬件是通过总线连接起来. CPU 输出位图, 经由总
  	   }
 	}
 	``` 
-	- attachCategories 源码
+	- **attachCategories** 源码
 
 	```objectivec
 	static void 
@@ -281,7 +281,7 @@ CPU 和 GPU 两个硬件是通过总线连接起来. CPU 输出位图, 经由总
 	    free(protolists);
 	}
 	```
-	- attachLists 源码
+	- **attachLists** 源码
 	
 	```objectivec
     	/*
@@ -385,10 +385,10 @@ category 的属性不能生成成员变量和 getter、setter 方法的实现，
 	}
 	```
 	- 这段代码引用的类型有:
-		- AssociationsManager
-		- AssociationsHashMap
-		- ObjcAssociationMap
-		- ObjcAssociation
+		- **AssociationsManager**
+		- **AssociationsHashMap**
+		- **ObjcAssociationMap**
+		- **ObjcAssociation**
 	
 	```objectivec
 	spinlock_t AssociationsManagerLock;
@@ -446,12 +446,12 @@ category 的属性不能生成成员变量和 getter、setter 方法的实现，
 	- **ObjcAssociation** 就是真正的关联对象的类，上面的所有数据结构只是为了更好的存储它。最关键的 ObjcAssociation 包含了 policy 以及 value
 	- 用一张图解释他们的关系就是：
 	![ObjcAssociationa_relationship](/Assets/ObjcAssociationa_relationship.png)
-	- 从上图我们不难看出 _object_get_associative_reference 获取关联对象的步骤是：
+	- 从上图我们不难看出 **_object_get_associative_reference** 获取关联对象的步骤是：
 		- AssociationsHashMap &associations(manager.associations()) 获取 AssociationsHashMap 的单例对象 associations
 		- disguised_ptr_t disguised_object = DISGUISE(object) 获取对象的地址
 		- 通过对象的地址在 associations 中获取 AssociationsHashMap迭代器
 		- 通过 key获取到 ObjectAssociationMap的迭代器
-		- 最后得出关联对象类 ObjcAssociation 的实例 entry，再获取到 value 和 policy 的值
+		- 最后得出关联对象类 **ObjcAssociation** 的实例 entry，再获取到 value 和 policy 的值
 	- **_object_set_associative_reference** 源码
 	
 	```objectivec
