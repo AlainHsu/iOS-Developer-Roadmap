@@ -781,8 +781,15 @@ category 的属性不能生成成员变量和 getter、setter 方法的实现，
 
 # Development Tools
 ## Environment
-- [VPS+Shadowsocks](https://teddysun.com/486.html)
+- [VPS+Shadowsocks](https://juejin.im/post/5ac312746fb9a028d2081f6f)
 "Across the Great Wall we can reach every corner of the world."
+	```shell
+	ssh root@服务器ip
+	#一键安装脚本部署 Shadowsocks
+	wget --no-check-certificate -O shadowsocks-all.sh https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocks-all.sh
+	chmod +x shadowsocks-all.sh
+	./shadowsocks-all.sh 2>&1 | tee shadowsocks-all.log
+	```
 
 ## Development
 - [Postman](https://www.getpostman.com)
