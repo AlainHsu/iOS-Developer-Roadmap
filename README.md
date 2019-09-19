@@ -790,6 +790,17 @@ category 的属性不能生成成员变量和 getter、setter 方法的实现，
 	chmod +x shadowsocks-all.sh
 	./shadowsocks-all.sh 2>&1 | tee shadowsocks-all.log
 	```
+- [iTerm2](https://www.iterm2.com/)
+Replacement for Terminal in mac OS
+
+- [Solarized](https://ethanschoonover.com/solarized/)
+Color palette designed for use with terminal and gui applications.
+
+- [oh-my-zsh](https://link.jianshu.com/?t=https://github.com/robbyrussell/oh-my-zsh)
+zsh extension.
+
+- [Menlo-Powerline](https://link.jianshu.com/?t=https://gist.github.com/qrush/1595572/raw/417a3fa36e35ca91d6d23ac961071094c26e5fad/Menlo-Powerline.otf)
+Install this font or error codes may appear when using ZSH_THEME="agnoster".
 
 ## Development
 - [Postman](https://www.getpostman.com)
