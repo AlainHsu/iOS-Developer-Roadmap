@@ -781,7 +781,7 @@ category 的属性不能生成成员变量和 getter、setter 方法的实现，
 
 # Development Tools
 ## Environment
-- [VPS+Shadowsocks](https://juejin.im/post/5ac312746fb9a028d2081f6f)
+- [VPS+Shadowsocks](https://bwh88.net/index.php)
 
 	```shell
 	ssh root@服务器ip
