@@ -782,14 +782,24 @@ category 的属性不能生成成员变量和 getter、setter 方法的实现，
 # Development Tools
 ## Environment
 - [VPS+Shadowsocks](https://juejin.im/post/5ac312746fb9a028d2081f6f)
-"Across the Great Wall we can reach every corner of the world."
+
 	```shell
 	ssh root@服务器ip
-	#一键安装脚本部署 Shadowsocks
+	#一键安装脚本部署 Shadowsocks, 选ShadowsocksR
 	wget --no-check-certificate -O shadowsocks-all.sh https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocks-all.sh
 	chmod +x shadowsocks-all.sh
 	./shadowsocks-all.sh 2>&1 | tee shadowsocks-all.log
 	```
+	
+	```bash
+	#网络加速，推荐锐速或BBRplus（先安装内核,重启后重跑脚本开启加速）  
+	wget -N --no-check-certificate "https://raw.githubusercontent.com/chiakge/Linux-NetSpeed/master/tcp.sh"
+	chmod +x tcp.sh
+	./tcp.sh
+	```
+![](https://s1.ax1x.com/2018/12/24/F6XveP.png)
+	
+	
 - [iTerm2](https://www.iterm2.com/)
 Replacement for Terminal in mac OS
 
