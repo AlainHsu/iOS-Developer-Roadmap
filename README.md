@@ -827,14 +827,26 @@ Markdown format.
 Extendable Markdown editor.
 - [Web sequence diagram](https://www.websequencediagrams.com)
 Generate sequence diagram online.
-- [Capture iOS Simulator to animated gif](https://gist.github.com/julesjans/2baa9e4bc11b033ea8eec3f15a8029a1)
+- [Capture iOS Simulator to animated gif](https://superuser.com/questions/436056/how-can-i-get-ffmpeg-to-convert-a-mov-to-a-gif/1061409?newreg=26cf8a48775443528209dfa213796171)
 
 	```shell
-	# Turn on the simulator screen capture
-	xcrun simctl io booted recordVideo ~/simulator.mov
-	
-	# Convert the iPhone 6s screen shot into a gif:
-	ffmpeg -i ~/simulator.mov -vf scale=320:-1 -r 6 -f gif -y simulator.gif
+	ffmpeg -i <input source> -filter_complex "[0:v] fps=12,scale=<width>:-1,split [a][b];[a] palettegen [p];[b][p] paletteuse" <output file>
 	```
+	In this command there are 3 tokens you need to plug in. The ```<input source>``` will be something like your-recording.mov, the ```<width>``` should be the width you want the final gif to be, and ```<output file>``` will be something like recording.gif.
+
+	This command breaks down to mean:
+
+	* ```filter_complex``` we're going to be chaining some filters together
+	* ```[0:v] fps=12``` take the first video stream in the container at 12 frames per second
+	* ```scale=1024:-1``` resize to width of 1024 and keep aspect ratio for the height
+	* ```split [a][b]``` take the current stream and split it into two (basically clone it)
+	* ```;``` new filter incoming
+	* ```[a] palettegen [p]``` take the "a" stream and generate a color palette called "p"
+	* ```;``` new filter incoming
+	* ```[b][p] paletteuse``` take the "b" stream and apply "p" color palette
+	The color palette stuff isn't always necessary for screen recordings, but is definitely required to have better colors for recorded video.
+
+	You can also plug in -ss 00:00:00.000 and -t 00:00:00.000 as needed if you are going to be clipping it as well.
+	
 - [You-Get](https://github.com/soimort/you-get)
 Download web vedio in command line.
